@@ -3,6 +3,7 @@
 Run from the repository root:
     pytest -q
 """
+from __future__ import annotations
 
 from pathlib import Path
 import sys
@@ -26,7 +27,7 @@ from challenges import (  # noqa: E402
 # Required Problem 1: count_evidence
 # -----------------------------------------------------------------------------
 
-def test_count_evidence_counts_multiple_labels() -> None:
+def test_count_evidence_counts_multiple_labels():
     evidence = ["phone", "receipt", "phone", "cash", "receipt", "phone"]
 
     assert count_evidence(evidence) == {
@@ -36,41 +37,51 @@ def test_count_evidence_counts_multiple_labels() -> None:
     }
 
 
-def test_count_evidence_empty_list() -> None:
+def test_count_evidence_empty_list():
     assert count_evidence([]) == {}
 
 
-def test_count_evidence_single_item() -> None:
+def test_count_evidence_single_item():
     assert count_evidence(["keycard"]) == {"keycard": 1}
 
 
-def test_count_evidence_is_case_sensitive() -> None:
+def test_count_evidence_is_case_sensitive():
     assert count_evidence(["phone", "Phone", "phone"]) == {
         "phone": 2,
         "Phone": 1,
     }
 
 
+# Custom test: all identical labels collapse to one key with correct count
+def test_count_evidence_all_same_label():
+    assert count_evidence(["knife", "knife", "knife"]) == {"knife": 3}
+
+
 # -----------------------------------------------------------------------------
 # Required Problem 2: first_repeated_id
 # -----------------------------------------------------------------------------
 
-def test_first_repeated_id_returns_first_id_that_repeats() -> None:
+def test_first_repeated_id_returns_first_id_that_repeats():
     ids = ["A17", "B22", "C91", "B22", "A17"]
 
     assert first_repeated_id(ids) == "B22"
 
 
-def test_first_repeated_id_returns_none_when_no_repeat() -> None:
+def test_first_repeated_id_returns_none_when_no_repeat():
     assert first_repeated_id(["A17", "B22", "C91"]) is None
 
 
-def test_first_repeated_id_handles_empty_list() -> None:
+def test_first_repeated_id_handles_empty_list():
     assert first_repeated_id([]) is None
 
 
-def test_first_repeated_id_repeat_can_be_first_item() -> None:
+def test_first_repeated_id_repeat_can_be_first_item():
     assert first_repeated_id(["X01", "X01", "A17"]) == "X01"
+
+
+# Custom test: only two items, both the same
+def test_first_repeated_id_two_identical_items():
+    assert first_repeated_id(["Z99", "Z99"]) == "Z99"
 
 
 # -----------------------------------------------------------------------------
@@ -87,7 +98,7 @@ def test_first_repeated_id_repeat_can_be_first_item() -> None:
         "case-{A17}[photo](verified)",
     ],
 )
-def test_valid_tags_returns_true_for_balanced_tags(tags: str) -> None:
+def test_valid_tags_returns_true_for_balanced_tags(tags):
     assert valid_tags(tags) is True
 
 
@@ -101,15 +112,20 @@ def test_valid_tags_returns_true_for_balanced_tags(tags: str) -> None:
         "([)]",
     ],
 )
-def test_valid_tags_returns_false_for_unbalanced_tags(tags: str) -> None:
+def test_valid_tags_returns_false_for_unbalanced_tags(tags):
     assert valid_tags(tags) is False
+
+
+# Custom test: closing bracket with nothing on stack
+def test_valid_tags_lone_closing_bracket():
+    assert valid_tags("}") is False
 
 
 # -----------------------------------------------------------------------------
 # Required Problem 4: lookup_alias
 # -----------------------------------------------------------------------------
 
-def test_lookup_alias_returns_real_name_for_known_alias() -> None:
+def test_lookup_alias_returns_real_name_for_known_alias():
     aliases = {
         "Big Red": "Marco Silva",
         "The Accountant": "Nina Park",
@@ -119,29 +135,33 @@ def test_lookup_alias_returns_real_name_for_known_alias() -> None:
     assert lookup_alias(aliases, "The Accountant") == "Nina Park"
 
 
-def test_lookup_alias_returns_none_for_unknown_alias() -> None:
+def test_lookup_alias_returns_none_for_unknown_alias():
     aliases = {"Big Red": "Marco Silva"}
 
     assert lookup_alias(aliases, "Unknown") is None
 
 
-def test_lookup_alias_handles_empty_dictionary() -> None:
+def test_lookup_alias_handles_empty_dictionary():
     assert lookup_alias({}, "Ghostline") is None
+
+
+# Custom test: alias with spaces
+def test_lookup_alias_alias_with_spaces():
+    aliases = {"The Fox": "Dana Lee"}
+    assert lookup_alias(aliases, "The Fox") == "Dana Lee"
 
 
 # -----------------------------------------------------------------------------
 # Optional Challenge 1: process_reports
 # -----------------------------------------------------------------------------
 
-@pytest.mark.skip(reason="Optional challenge: remove this skip to check it.")
-def test_process_reports_returns_reports_in_arrival_order() -> None:
+def test_process_reports_returns_reports_in_arrival_order():
     reports = ["burglary", "traffic stop", "missing wallet", "noise complaint"]
 
     assert process_reports(reports) == reports
 
 
-@pytest.mark.skip(reason="Optional challenge: remove this skip to check it.")
-def test_process_reports_handles_empty_list() -> None:
+def test_process_reports_handles_empty_list():
     assert process_reports([]) == []
 
 
@@ -149,19 +169,16 @@ def test_process_reports_handles_empty_list() -> None:
 # Optional Challenge 2: largest_time_gap
 # -----------------------------------------------------------------------------
 
-@pytest.mark.skip(reason="Optional challenge: remove this skip to check it.")
-def test_largest_time_gap_sorts_and_finds_largest_neighbor_gap() -> None:
+def test_largest_time_gap_sorts_and_finds_largest_neighbor_gap():
     assert largest_time_gap([1300, 915, 1600, 945]) == 355
 
 
-@pytest.mark.skip(reason="Optional challenge: remove this skip to check it.")
-def test_largest_time_gap_handles_short_lists() -> None:
+def test_largest_time_gap_handles_short_lists():
     assert largest_time_gap([]) == 0
     assert largest_time_gap([1200]) == 0
 
 
-@pytest.mark.skip(reason="Optional challenge: remove this skip to check it.")
-def test_largest_time_gap_does_not_mutate_input() -> None:
+def test_largest_time_gap_does_not_mutate_input():
     times = [1300, 915, 1600, 945]
 
     largest_time_gap(times)
